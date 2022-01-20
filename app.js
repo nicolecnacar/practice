@@ -17,17 +17,17 @@ app.use(express.static(path.join(__dirname,'/public')));
 app.use(cookieParser());
 app.use(session({secret: "Shh, its a secret!",saveUninitialized:true, resave: false}));
 
-// const db  = mysql.createConnection({
-//     host            : 'localhost',
-//     user            : 'root',
-//     password        : '08019899',
-//     database        : 'practice'
-// })
+const db  = mysql.createConnection({
+    host            : 'localhost',
+    user            : 'root',
+    password        : '08019899',
+    database        : 'practice'
+})
 
-// db.connect((err)=>{
-//     if(err) throw err
-//     console.log("Connected to db")
-// })
+db.connect((err)=>{
+    if(err) throw err
+    console.log("Connected to db")
+})
 
 app.get('/',(req,res) => {
     res.render("home")
@@ -160,4 +160,22 @@ app.get('/decline/:id',(req,res) => {
         })
 });
 
+app.get('/delete/:id',(req,res) => {
+
+        const sql = `DELETE from form WHERE formID = ${req.params.id}`;
+
+        db.query(sql, (err,result)=>{
+
+            if(err) throw err;
+            req.session.destroy()
+            res.redirect("/dashboard")
+
+        })
+});
+
 app.listen(process.env.PORT||3000);
+
+// `DELETE from TABLENAME WHERE ID = ${req.params.id}`
+// req.session.destroy()
+// res.redirect("/dashboard")
+
